@@ -1,32 +1,43 @@
-import {TaskPropsType} from '../App.tsx';
-import {Task} from './Task.tsx';
+import {filterValueType, TaskType} from '../App.tsx';
 import {Button} from './Button.tsx';
 
 type TitlePropsType = {
     title: string
-    tasks: TaskPropsType[]
+    tasks: TaskType[]
+    removeTasks: (taskId: number) => void
+    changeFilter: (filterValue: filterValueType) => void
 }
 
-export const Todolist = ({title, tasks}: TitlePropsType) => {
-
-    const mappedTasks = tasks.map((task: TaskPropsType) =>
-        <Task key={task.id} title={task.title} isDone={task.isDone}/>
-    )
-
+export const Todolist = ({
+                             title,
+                             tasks,
+                             removeTasks,
+                             changeFilter}: TitlePropsType) => {
     return (
         <div>
             <h3>{title}</h3>
             <div>
                 <input/>
-                <button>+</button>
+                <Button title={'+'}/>
             </div>
-            <ul>
-                {mappedTasks}
-            </ul>
+            {
+                tasks.length === 0
+                    ? <p>No tasks</p>
+                    : <ul>
+                        {tasks.map((task: TaskType) => {
+                            return <li key={task.id}>
+                                <button onClick={()=> removeTasks(task.id)}>X
+                                </button>
+                                <input type="checkbox" checked={task.isDone}/>
+                                <span>{task.title}</span>
+                            </li>
+                        })}
+                    </ul>
+            }
             <div>
-                <Button title={'All'}/>
-                <Button title={'Active'}/>
-                <Button title={'Completed'}/>
+                <button onClick={()=>{changeFilter('All')}}>All</button>
+                <button onClick={()=>{changeFilter('Active')}}>Active</button>
+                <button onClick={()=>{changeFilter('Completed')}}>Completed</button>
             </div>
         </div>
     );

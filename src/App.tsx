@@ -1,33 +1,60 @@
 import './App.css';
 import {Todolist} from './components/Todolist.tsx';
+import {useState} from 'react';
 
-const title1='What to learn-1'
-const title2='What to learn-2'
+const title1 = 'What to learn-1'
 
-export type TaskPropsType = {
+export type TaskType = {
     id: number
     title: string
     isDone: boolean
 }
 
-const tasks1: TaskPropsType[] = [
-    {id: 1, title: 'HTML&CSS', isDone: true},
-    {id: 2, title: 'JS', isDone: true},
-    {id: 3, title: 'ReactJS', isDone: false},
-    {id: 4, title: 'ReactJS-2', isDone: false},
-]
-
-const tasks2: TaskPropsType[] = [
-    {id: 1, title: 'Hello world', isDone: true},
-    {id: 2, title: 'I am Happy', isDone: false},
-    {id: 3, title: 'Yo', isDone: false},
-]
+export type filterValueType = 'All' | 'Active' | 'Completed';
 
 function App() {
+
+    let [tasks, setTasks] = useState<TaskType[]>([
+        {id: 1, title: 'HTML&CSS', isDone: true},
+        {id: 2, title: 'JS', isDone: true},
+        {id: 3, title: 'ReactJS', isDone: false},
+        {id: 4, title: 'ReactJS-2', isDone: false},
+        {id: 5, title: 'Typescript', isDone: false},
+        {id: 6, title: 'RTK query', isDone: false}
+    ])
+
+    const removeTasks = (taskId: number) => {
+        setTasks(tasks.filter(task => task.id !== taskId))
+    }
+
+    const [filterValue, setFilterValue] = useState('All')
+
+    const changeFilter = (filterButton: filterValueType) => {
+        setFilterValue(filterButton)
+    }
+
+    const durshlagFoo = () => {
+
+        switch (filterValue) {
+            case 'Completed': {
+                return tasks.filter(task => task.isDone)
+            }
+            case 'Active': {
+                return tasks.filter(task => !task.isDone)
+            }
+            default:
+                return tasks
+        }
+    }
+
+    let durshlagVal = durshlagFoo()
+
     return (
         <div className="app">
-            <Todolist title={title1} tasks={tasks1}/>
-            <Todolist title={title2} tasks={tasks2}/>
+            <Todolist title={title1}
+                      tasks={durshlagVal}
+                      removeTasks={removeTasks}
+                      changeFilter={changeFilter}/>
         </div>
     )
 }
