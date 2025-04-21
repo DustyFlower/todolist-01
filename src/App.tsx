@@ -24,18 +24,22 @@ function App() {
         {id: v1(), title: 'RTK query', isDone: false}
     ])
 
+    const [filterValue, setFilterValue] = useState('All')
+
     const removeTasks = (taskId: string) => {
         setTasks(tasks.filter(task => task.id !== taskId))
     }
 
-    const [filterValue, setFilterValue] = useState('All')
+    const changeIsDone = (taskId: string, isDone: boolean) => {
+        setTasks(tasks.map(el => el.id === taskId ? {...el, isDone} : el))
+    }
 
     const changeFilter = (filterButton: FilterValueType) => {
         setFilterValue(filterButton)
     }
 
     const addTask = (newTitle: string) => {
-        const newTask: TaskType = {id: v1(), title: newTitle, isDone: true}
+        const newTask: TaskType = {id: v1(), title: newTitle, isDone: false}
         setTasks([newTask, ...tasks])
     }
 
@@ -61,7 +65,8 @@ function App() {
                       tasks={filteredTasksForTodoList}
                       removeTasks={removeTasks}
                       changeFilter={changeFilter}
-                      addTask={addTask}/>
+                      addTask={addTask}
+                      changeIsDone={changeIsDone}/>
         </div>
     )
 }
