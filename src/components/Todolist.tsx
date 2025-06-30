@@ -1,6 +1,7 @@
 import {FilterValueType, TaskType} from '../App.tsx';
-import {useState, KeyboardEvent, ChangeEvent} from 'react';
 import {Button} from './Button.tsx';
+import {AddItemForm} from './AddItemForm.tsx';
+import {EditableSpan} from './EditableSpan.tsx';
 
 type TitlePropsType = {
     todolistId: string
@@ -9,9 +10,11 @@ type TitlePropsType = {
     filter: FilterValueType
     removeTasks: (todolistId: string, taskId: string) => void
     changeFilter: (todolistId: string, filterValue: FilterValueType) => void
-    addTask: (todolistId: string, newTitle: string) => void
+    addItem: (todolistId: string, title: string) => void
     changeIsDone: (todolistId: string, taskId: string, isDone: boolean) => void
     removeTodolist: (todolistId: string) => void
+    updateTaskTitle: (todolistId: string, taskId: string, updateTitle: string) => void
+    updateTodolistTitle: (todolistId: string, updateTitle: string) => void
 }
 
 export const Todolist = ({
@@ -21,36 +24,15 @@ export const Todolist = ({
                              filter,
                              removeTasks,
                              changeFilter,
-                             addTask,
+                             addItem,
                              changeIsDone,
-                             removeTodolist
+                             removeTodolist,
+                             updateTaskTitle,
+                             updateTodolistTitle
                          }: TitlePropsType) => {
-
-    const [newTitle, setNewTitle] = useState('')
-    const [error, setError] = useState<string | null>(null)
 
     const changeFilterHandler = (value: FilterValueType) => {
         changeFilter(todolistId, value)
-    }
-
-    const addTaskHandler = () => {
-        if (newTitle.trim()) {
-            addTask(todolistId, newTitle.trim());
-            setNewTitle('')
-        } else {
-            setError('Title is required')
-        }
-    }
-
-    const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            addTaskHandler()
-        }
-    }
-
-    const onChangeTaskTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setError(null)
-        setNewTitle(e.currentTarget.value)
     }
 
     const onChangeCheckboxHandler = (todolistId: string, taskId: string, isDone: boolean) => {
@@ -77,6 +59,18 @@ export const Todolist = ({
         }
     }
 
+    const addTaskHandler = (title: string) => {
+        addItem(todolistId, title)
+    }
+
+    const updateTodolistTitleHandler = (updateTitle: string) => {
+        updateTodolistTitle(todolistId, updateTitle)
+    }
+
+    const updateTaskTitleHandler = (taskId: string, updateTitle: string) => {
+        updateTaskTitle(todolistId, taskId, updateTitle)
+    }
+
     const mappedTasks = tasksForTodoList().map((task: TaskType) => {
 
         return <li className={task.isDone ? 'isDone' : ''} key={task.id}>
@@ -84,22 +78,18 @@ export const Todolist = ({
             <input type="checkbox"
                    onChange={(event) => onChangeCheckboxHandler(todolistId, task.id, event.currentTarget.checked)}
                    checked={task.isDone}/>
-            <span>{task.title}</span>
+            <EditableSpan oldTitle={task.title}
+                          onClick={(updateTitle) => updateTaskTitleHandler(task.id, updateTitle)}/>
         </li>
     })
 
     return (
         <div>
-            <h3>{title}</h3>
+            <h3>
+                <EditableSpan oldTitle={title} onClick={updateTodolistTitleHandler}/>
+            </h3>
             <Button title={'x'} onClick={removeTodolistHandler}></Button>
-            <div>
-                <input className={error ? 'error' : ''}
-                       value={newTitle}
-                       onChange={onChangeTaskTitleHandler}
-                       onKeyDown={onKeyDownHandler}/>
-                <Button title={'+'} onClick={addTaskHandler}/>
-                {error && <p className={'errorMessage'}>{error}</p>}
-            </div>
+            <AddItemForm addItem={addTaskHandler}/>
             {
                 tasks.length === 0
                     ? <p>No tasks</p>
