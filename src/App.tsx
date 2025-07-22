@@ -3,6 +3,13 @@ import {Todolist} from './components/Todolist.tsx';
 import {useState} from 'react';
 import {v1} from 'uuid';
 import {AddItemForm} from './components/AddItemForm.tsx';
+import {ButtonAppBar} from './components/ButtonAppBar.tsx';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import {PaperSx} from './components/Todolist.styles.ts';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 export type TaskType = {
     id: string
@@ -17,6 +24,8 @@ type TodolistType = {
 }
 
 export type FilterValueType = 'All' | 'Active' | 'Completed';
+
+type ThemeMode = 'dark' | 'light'
 
 function App() {
 
@@ -95,25 +104,54 @@ function App() {
     }
 
     let mappedTodolists = todolists.map(el =>
-        <Todolist
-            key={el.id}
-            todolistId={el.id}
-            title={el.title}
-            tasks={tasks[el.id]}
-            filter={el.filter}
-            removeTasks={removeTasks}
-            changeFilter={changeFilter}
-            addItem={addTask}
-            changeIsDone={changeIsDone}
-            removeTodolist={removeTodolist}
-            updateTaskTitle={updateTaskTitle}
-            updateTodolistTitle={updateTodolistTitle}/>
+        <Grid>
+            <Paper sx={PaperSx} elevation={5}>
+                <Todolist
+                    key={el.id}
+                    todolistId={el.id}
+                    title={el.title}
+                    tasks={tasks[el.id]}
+                    filter={el.filter}
+                    removeTasks={removeTasks}
+                    changeFilter={changeFilter}
+                    addItem={addTask}
+                    changeIsDone={changeIsDone}
+                    removeTodolist={removeTodolist}
+                    updateTaskTitle={updateTaskTitle}
+                    updateTodolistTitle={updateTodolistTitle}/>
+            </Paper>
+        </Grid>
     )
+
+    const [themeMode, setThemeMode] = useState<ThemeMode>('light')
+
+    const theme = createTheme({
+        palette: {
+            mode: themeMode === 'light' ? 'light' : 'dark',
+            primary: {
+                main: '#088651',
+            },
+        },
+    });
+
+    const changeModeHandler = () => {
+        setThemeMode(themeMode == 'light' ? 'dark' : 'light')
+    }
 
     return (
         <div className="app">
-            <AddItemForm addItem={addTodolist}/>
-            {mappedTodolists}
+            <ThemeProvider theme={theme}>
+                <Container fixed>
+                    <ButtonAppBar onChange={changeModeHandler}/>
+                    <Grid container>
+                        <AddItemForm addItem={addTodolist}/>
+                    </Grid>
+                    <Grid container spacing={3}>
+                        {mappedTodolists}
+                    </Grid>
+                </Container>
+                <CssBaseline />
+            </ThemeProvider>
         </div>
     )
 }

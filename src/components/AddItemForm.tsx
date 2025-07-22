@@ -1,5 +1,6 @@
-import {Button} from './Button.tsx';
 import {ChangeEvent, KeyboardEvent, useState} from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 type AddItemFormPropsType = {
     addItem: (title: string) => void
@@ -30,14 +31,29 @@ export const AddItemForm = ({addItem}: AddItemFormPropsType) => {
         setTitle(e.currentTarget.value)
     }
 
+    const buttonStyle = {
+        maxWidth: '38px',
+        maxHeight: '38px',
+        minWidth: '38px',
+        minHeight: '38px',
+        marginLeft: '5px'
+    }
+
     return (
         <div>
-            <input className={error ? 'error' : ''}
-                   value={title}
-                   onChange={onChangeItemTitleHandler}
-                   onKeyDown={onKeyDownHandler}/>
-            <Button title={'+'} onClick={addItemHandler}/>
-            {error && <p className={'errorMessage'}>{error}</p>}
+            <TextField error={!!error}
+                       helperText={error}
+                       id="outlined-basic"
+                       size={'small'}
+                       label="Type smth..."
+                       variant="outlined"
+                       value={title}
+                       onChange={onChangeItemTitleHandler}
+                       onKeyDown={onKeyDownHandler}/>
+
+            <Button onClick={addItemHandler}
+                    variant={'contained'}
+                    sx={buttonStyle}>+</Button>
         </div>
     );
 };
