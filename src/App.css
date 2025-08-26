@@ -1,36 +1,8 @@
-.app {
-/*  padding: 30px;
-  display: flex;*/
+.App {
+  padding: 30px;
+  display: flex;
 }
 
-/*.todolists {
-  display: flex;
-  padding: 20px;
-  gap: 20px;
-}*/
-
-/*
-.app > div {
+.App > div {
   margin-right: 50px;
 }
-
-.error {
-  border: 3px solid red;
-}
-
-.errorMessage {
-  color: red;
-}
-
-.activeFilter {
-  background-color: aquamarine;
-}
-
-.isDone {
-  opacity: 0.5;
-}
-
-h3 {
-  display: inline-block;
-  margin-right: 5px;
-}*/
