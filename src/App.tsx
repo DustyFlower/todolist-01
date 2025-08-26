@@ -2,8 +2,8 @@ import './App.css';
 import {Todolist} from './Todolist';
 import {useReducer} from 'react';
 import {v1} from 'uuid';
-import {addTaskAC, removeTaskAC, tasksReducer} from './modele/tasksReducer.ts';
-import {changeFilterAC, filterReducer} from './modele/filterReducer.ts';
+import {addTaskAC, removeTaskAC, tasksReducer} from './model/tasksReducer.ts';
+import {changeFilterAC, filterReducer} from './model/filterReducer.ts';
 
 export type TaskType = {
     id: string
